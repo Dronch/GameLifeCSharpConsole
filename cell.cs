@@ -1,27 +1,50 @@
-using System;
+﻿using System;
 
-
-namespace GameLife {
-
-  public class Cell
-  {
-    public bool is_active {get {return _is_active;}}
-
-    private bool _is_active;
-    private bool _will_be_active;
-
-    public Cell(bool active) => _will_be_active = active; 
-
-    public void predict_generation (ref Cell[] neighbors)
+namespace GameLifeCSharpConsole
+{
+    class Cell
     {
-      // TODO implement gamelife cell logic
-      _will_be_active = !is_active; // mock
-    }
+        public bool IsActive 
+        { 
+            get { return _isActive; } 
+            private set { _isActive = value; } 
+        }
 
-    public void change_generation()
-    {
-      _is_active = _will_be_active;
-    }
-  }
+        public bool WillBeActive
+        {
+            get { return _willBeActive; }
+            private set { _willBeActive = value; }
+        }
 
+        private bool _isActive;
+        private bool _willBeActive;
+
+        public Cell(bool isActive)
+        {
+            WillBeActive = isActive;
+        }
+
+        public void ChangeGeneration()
+        {
+            IsActive = WillBeActive;
+        }
+
+        public void PredictCellStatus(int activeNeighbors)
+        {
+            if (!IsActive && activeNeighbors == 3)
+            {
+                WillBeActive = true;
+            }
+
+            else if (IsActive && (activeNeighbors < 2 || activeNeighbors > 3))
+            {
+                WillBeActive = false;
+            }
+
+            else
+            {
+                WillBeActive = IsActive;
+            }
+        }
+    }
 }
