@@ -17,12 +17,9 @@ namespace GameLifeCSharpConsole
                 Console.WriteLine();
                 Console.WriteLine(String.Format("Generation: {0}", generation++));
                 field.GoToNextGeneration();
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
             }
             while (field.AreAllCellsDead() && Console.KeyAvailable == false);
-            {
-                
-            }
 
             Console.WriteLine("Finished");
         }

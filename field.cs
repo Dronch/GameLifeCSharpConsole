@@ -75,7 +75,7 @@ namespace GameLifeCSharpConsole
             {
                 for (int j = 0; j < _width; j++)
                 {
-                    int activeNeightboors = GetActiveNeighbors(i, j);
+                    int activeNeightboors = GetActiveNeighbors(j, i);
                     _cells[i,j].PredictCellStatus(activeNeightboors);
                 }
             }
