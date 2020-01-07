@@ -36,7 +36,6 @@ namespace GameLifeCSharpConsole
             }
         }
 
-
         public void DrawField()
         {
             Console.Clear();
@@ -105,10 +104,10 @@ namespace GameLifeCSharpConsole
         }    
 
         private void CheckFieldHeight(string[] rows)
-        {
+        {      
             if (rows.Length != _height)
             {
-                throw new Exception(string.Format($"The input file must have {_height} lines, every {_width} symbols long."));
+                throw new InvalidFieldHeightException(rows.Length, _height);
             }
         }
 
@@ -119,7 +118,7 @@ namespace GameLifeCSharpConsole
                 // Checking if every line of input has correct width.
                 if (row.Length != _width)
                 {
-                    throw new Exception(string.Format($"Every line must be {_width} symbols long."));
+                    throw new InvalidFieldWidthException(row.Length,_width);
                 }
             }
         }
@@ -132,7 +131,7 @@ namespace GameLifeCSharpConsole
                 {
                     if (row[i] != '0' && row[i] != '1')
                     {
-                        throw new Exception(string.Format("The input file must consist only of '1' and '0' symbols."));
+                        throw new InvalidInputSymbolsException(row[i]);
                     }
                 }
             }
@@ -154,7 +153,7 @@ namespace GameLifeCSharpConsole
 
             if(!hasAnyActiveCells)
             {
-                throw new Exception(string.Format("Every input field must contain at least one active cell! Add some using the '1' symbol."));
+                throw new NoActiveCellsException();
             }
         }
 
