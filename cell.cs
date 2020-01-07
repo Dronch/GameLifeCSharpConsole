@@ -28,12 +28,15 @@ namespace GameLifeCSharpConsole
 
         public void PredictCellStatus(int activeNeighbors)
         {
-            if (!IsActive && activeNeighbors == 3)
+            bool willBeBorn = !IsActive && activeNeighbors == 3;
+            bool willDie = IsActive && (activeNeighbors < 2 || activeNeighbors > 3);
+
+            if (willBeBorn)
             {
                 WillBeActive = true;
             }
 
-            else if (IsActive && (activeNeighbors < 2 || activeNeighbors > 3))
+            else if (willDie)
             {
                 WillBeActive = false;
             }
