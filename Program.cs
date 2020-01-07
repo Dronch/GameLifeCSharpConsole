@@ -10,16 +10,32 @@ namespace GameLifeCSharpConsole
             Field field = new Field(20, 40);
             field.Init("input.txt");
 
+            RunTheGameOfLife(field);
+        }
+
+        static void RunTheGameOfLife(Field field)
+        {
             int generation = 0;
+            bool AllCellsAreDead = false;
             do
             {
-                field.DrawField();
+                try
+                {
+                    field.DrawField();
+                }
+
+                catch (NoActiveCellsException)
+                {
+                    Console.WriteLine("No active cells left on the field! Game over.");
+                    AllCellsAreDead = true;
+                }
+
                 Console.WriteLine();
                 Console.WriteLine(String.Format("Generation: {0}", generation++));
                 field.GoToNextGeneration();
                 Thread.Sleep(1000);
             }
-            while (field.AreAllCellsDead() && Console.KeyAvailable == false);
+            while (!AllCellsAreDead && Console.KeyAvailable == false);
 
             Console.WriteLine("Finished");
         }

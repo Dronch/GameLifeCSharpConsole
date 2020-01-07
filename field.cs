@@ -38,6 +38,8 @@ namespace GameLifeCSharpConsole
 
         public void DrawField()
         {
+            AreAllCellsDead();
+
             Console.Clear();
 
             DrawUpperBorderLine();
@@ -67,9 +69,10 @@ namespace GameLifeCSharpConsole
             }
         }
 
-        public bool AreAllCellsDead()
+        public void AreAllCellsDead()
         {
-            bool hasAnyActiveCells = true;
+            bool hasAnyActiveCells = false;
+
             foreach (Cell cell in _cells)
             {
                 if (cell.IsActive || cell.WillBeActive)
@@ -77,7 +80,12 @@ namespace GameLifeCSharpConsole
                     hasAnyActiveCells = true;
                 }
             }
-            return hasAnyActiveCells;
+
+            if(!hasAnyActiveCells)
+            {
+                throw new NoActiveCellsException();
+            }
+
         }
 
         private int GetActiveNeighbors(int xPos, int yPos)

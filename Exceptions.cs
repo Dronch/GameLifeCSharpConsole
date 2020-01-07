@@ -28,8 +28,7 @@ namespace GameLifeCSharpConsole
     public class NoActiveCellsException : Exception
     {
         public NoActiveCellsException() 
-            : base(string.Format("Every input field must contain at least one active cell! " +
-                "Add some using the '1' symbol.")) 
+            : base(string.Format("Every field must contain at least one active cell!")) 
         { }
     }
 
