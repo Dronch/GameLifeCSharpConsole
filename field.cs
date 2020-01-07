@@ -27,11 +27,11 @@ namespace GameLifeCSharpConsole
             CheckInputSymbols(rows);// Checking if the file consists only of 1's and 0's.
             CheckActiveInputCells(rows);
 
-            for (int i = 0; i < _height; i++)
+            for (int y = 0; y < _height; y++)
             {
-                for (int j = 0; j < _width; j++)
+                for (int x = 0; x < _width; x++)
                 {
-                    _cells[i, j] = new Cell(rows[i][j] == '1');
+                    _cells[y, x] = new Cell(rows[y][x] == '1');
                 }
             }
         }
@@ -41,29 +41,29 @@ namespace GameLifeCSharpConsole
         {
             Console.Clear();
 
-            for (int i = 0; i < _height; i++)
+            for (int y = 0; y < _height; y++)
             {             
-                if (i == 0)
+                if (y == 0)
                     DrawUpperBorderLine();
 
-                for (int j = 0; j < _width; j++)
+                for (int x = 0; x < _width; x++)
                 {
                     //Drawing the left side of the border.
-                    if (j == 0)
+                    if (x == 0)
                         Console.Write('║');
 
                     //Drawing active and incative cells.
-                    _cells[i, j].ChangeGeneration();
-                    Console.Write(_cells[i, j].IsActive ? _render : ' ');
+                    _cells[y, x].ChangeGeneration();
+                    Console.Write(_cells[y, x].IsActive ? _render : ' ');
 
                     //Drawing the right side of the border.
-                    if (j == _width - 1)
+                    if (x == _width - 1)
                         Console.Write('║');
                 }
 
                 Console.WriteLine();
 
-                if (i == _height - 1)
+                if (y == _height - 1)
                     DrawLowerBorderLine();
             }
             
@@ -71,12 +71,12 @@ namespace GameLifeCSharpConsole
 
         public void GoToNextGeneration()
         {
-            for (int i = 0; i < _height; i++)
+            for (int y = 0; y < _height; y++)
             {
-                for (int j = 0; j < _width; j++)
+                for (int x = 0; x < _width; x++)
                 {
-                    int activeNeightboors = GetActiveNeighbors(j, i);
-                    _cells[i,j].PredictCellStatus(activeNeightboors);
+                    int activeNeightboors = GetActiveNeighbors(x, y);
+                    _cells[y,x].PredictCellStatus(activeNeightboors);
                 }
             }
         }
@@ -98,17 +98,17 @@ namespace GameLifeCSharpConsole
         {
             int activeCells = 0;
 
-            for (int i = -1; i < 2; i++)
+            for (int y = -1; y < 2; y++)
             {
-                for (int j = -1; j < 2; j++)
+                for (int x = -1; x < 2; x++)
                 {
-                    if (j == 0 && i == 0) // current cell position. cant be count as an active neighbor.
+                    if (x == 0 && y == 0) // current cell position. cant be count as an active neighbor.
                     {
                         continue;
                     }
 
-                    int yNeighborPos = (yPos + i + _height) % _height;
-                    int xNeighborPos = (xPos + j + _width) % -_width;
+                    int yNeighborPos = (yPos + y + _height) % _height;
+                    int xNeighborPos = (xPos + x + _width) % -_width;
 
                     if (_cells[yNeighborPos, xNeighborPos].IsActive)
                     {
