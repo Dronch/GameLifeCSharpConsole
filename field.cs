@@ -12,8 +12,8 @@ namespace GameLifeCSharpConsole
 
         public Field(int height, int width, char render = 'o')
         {
-            _width = width; //x (j)
-            _height = height; //y (i)
+            _width = width; //x
+            _height = height; //y
             _render = render;
             _cells = new Cell[_height, _width];
         }
@@ -41,32 +41,19 @@ namespace GameLifeCSharpConsole
         {
             Console.Clear();
 
+            DrawUpperBorderLine();
             for (int y = 0; y < _height; y++)
-            {             
-                if (y == 0)
-                    DrawUpperBorderLine();
-
+            {
+                Console.Write('║');
                 for (int x = 0; x < _width; x++)
                 {
-                    //Drawing the left side of the border.
-                    if (x == 0)
-                        Console.Write('║');
-
-                    //Drawing active and incative cells.
                     _cells[y, x].ChangeGeneration();
                     Console.Write(_cells[y, x].IsActive ? _render : ' ');
-
-                    //Drawing the right side of the border.
-                    if (x == _width - 1)
-                        Console.Write('║');
                 }
-
+                Console.Write('║');
                 Console.WriteLine();
-
-                if (y == _height - 1)
-                    DrawLowerBorderLine();
             }
-            
+            DrawLowerBorderLine();
         }
 
         public void GoToNextGeneration()
@@ -108,7 +95,7 @@ namespace GameLifeCSharpConsole
                     }
 
                     int yNeighborPos = (yPos + y + _height) % _height;
-                    int xNeighborPos = (xPos + x + _width) % -_width;
+                    int xNeighborPos = (xPos + x + _width) % _width;
 
                     if (_cells[yNeighborPos, xNeighborPos].IsActive)
                     {
@@ -176,24 +163,13 @@ namespace GameLifeCSharpConsole
 
         private void DrawUpperBorderLine()
         {
-
-            Console.Write('╔');
-            for (int z = 0; z < _width; z++)
-            {
-                Console.Write('═');
-            }
-            Console.Write('╗');
+            Console.Write('╔' + new String('═', _width) + '╗');
             Console.WriteLine();
         }
 
         private void DrawLowerBorderLine()
         {
-            Console.Write('╚');
-            for (int z = 0; z < _width; z++)
-            {
-                Console.Write('═');
-            }
-            Console.Write('╝');
+            Console.Write('╚' + new String('═', _width) + '╝');
             Console.WriteLine();
         }
     }
