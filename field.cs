@@ -97,10 +97,7 @@ namespace GameLifeCSharpConsole
                     int yNeighborPos = (yPos + y + _height) % _height;
                     int xNeighborPos = (xPos + x + _width) % _width;
 
-                    if (_cells[yNeighborPos, xNeighborPos].IsActive)
-                    {
-                        activeCells++;
-                    }
+                    activeCells += Convert.ToInt32(_cells[yNeighborPos, xNeighborPos].IsActive);
                 }
             }
 
