@@ -19,10 +19,7 @@ namespace GameLifeCSharpConsole
         private bool _isActive;
         private bool _willBeActive;
 
-        public Cell(bool isActive)
-        {
-            WillBeActive = isActive;
-        }
+        public Cell(bool isActive) => WillBeActive = isActive;
 
         public void ChangeGeneration()
         {
