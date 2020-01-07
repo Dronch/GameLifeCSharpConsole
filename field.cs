@@ -22,10 +22,17 @@ namespace GameLifeCSharpConsole
         {
             string[] rows = File.ReadAllLines(filename);
             // Checking the input:
-            CheckFieldHeight(rows);
-            CheckFieldWidth(rows);
-            CheckInputSymbols(rows);// Checking if the file consists only of 1's and 0's.
-            CheckActiveInputCells(rows);
+
+            //This check needs only length of rows array. No need to put in in a cycle.
+            CheckFieldHeight(rows); 
+
+            //Next 3 checks will need access to every row of rows[] array. So we put em all in a foreach cycle.
+            foreach(string row in rows)
+            {
+                CheckFieldWidth(row);
+                CheckInputSymbols(row);
+                CheckActiveInputCells(row);
+            }
 
             for (int y = 0; y < _height; y++)
             {
@@ -119,43 +126,34 @@ namespace GameLifeCSharpConsole
             }
         }
 
-        private void CheckFieldWidth(string[] rows)
+        private void CheckFieldWidth(string row)
         {
-            foreach (string row in rows)
+            if (row.Length != _width)
             {
-                // Checking if every line of input has correct width.
-                if (row.Length != _width)
+                throw new InvalidFieldWidthException(row.Length,_width);
+            }
+        }
+
+        private void CheckInputSymbols(string row)
+        {
+            for (int i = 0; i < row.Length; i++)
+            {
+                if (row[i] != '0' && row[i] != '1')
                 {
-                    throw new InvalidFieldWidthException(row.Length,_width);
+                    throw new InvalidInputSymbolsException(row[i]);
                 }
             }
         }
 
-        private void CheckInputSymbols(string[] rows)
-        {
-            foreach (string row in rows)
-            {
-                for (int i = 0; i < row.Length; i++)
-                {
-                    if (row[i] != '0' && row[i] != '1')
-                    {
-                        throw new InvalidInputSymbolsException(row[i]);
-                    }
-                }
-            }
-        }
-
-        private void CheckActiveInputCells(string[] rows)
+        private void CheckActiveInputCells(string row)
         {
             bool hasAnyActiveCells = false;
-            foreach (string row in rows)
+
+            for (int i = 0; i < row.Length; i++)
             {
-                for (int i = 0; i < row.Length; i++)
+                if (row[i] == '1')
                 {
-                    if (row[i] == '1')
-                    {
-                        hasAnyActiveCells = true;
-                    }
+                    hasAnyActiveCells = true;
                 }
             }
 
