@@ -30,10 +30,10 @@ namespace GameLifeCSharpConsole
             CheckFieldHeight(ref rows); 
 
             //Next 3 checks will need access to every row of rows[] array. So we put em all in a foreach cycle.
-            foreach(string row in rows)
+            for (int i = 0; i < rows.Length; i++)
             {
-                CheckFieldWidth(row);
-                CheckInputSymbols(row);
+                CheckFieldWidth(ref rows[i]);
+                CheckInputSymbols(rows[i]);
             }
 
             for (int y = 0; y < _height; y++)
@@ -119,8 +119,6 @@ namespace GameLifeCSharpConsole
                 return;
             }
 
-            Console.WriteLine(rows.Length);
-
             if (_fixErrors)
             {
                 int tailLength = rows.Length < _height ? _height - rows.Length : 0;
@@ -141,12 +139,25 @@ namespace GameLifeCSharpConsole
             {
                 throw new InvalidFieldHeightException(rows.Length, _height);
             }
-            Console.WriteLine(rows.Length);
         }
 
-        private void CheckFieldWidth(string row)
+        private void CheckFieldWidth(ref string row)
         {
-            if (row.Length != _width)
+            // Valid row width
+            if (row.Length == _width)
+            {
+                return;
+            }
+
+            if (_fixErrors)
+            {
+                int tailLength = row.Length < _width ? _width - row.Length : 0;
+                if (tailLength > 0)
+                {
+                  row += new String('0', tailLength);
+                }
+            }
+            else
             {
                 throw new InvalidFieldWidthException(row.Length, _width);
             }
