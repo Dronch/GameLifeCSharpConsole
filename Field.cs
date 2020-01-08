@@ -9,13 +9,15 @@ namespace GameLifeCSharpConsole
         private int _width, _height;
         private char _render;
         private Cell[,] _cells;
+        private bool _fixErrors;
 
-        public Field(int height, int width, char render = 'o')
+        public Field(int height, int width, bool fixErrors=false, char render = 'o')
         {
             _width = width; //x
             _height = height; //y
             _render = render;
             _cells = new Cell[_height, _width];
+            _fixErrors = fixErrors;
         }
 
         public void Init(string filename)
@@ -23,15 +25,15 @@ namespace GameLifeCSharpConsole
             string[] rows = File.ReadAllLines(filename);
             // Checking the input:
 
-            //This check needs only length of rows array. No need to put in in a cycle.
-            CheckFieldHeight(rows); 
+            // This check needs only length of rows array. No need to put in in a cycle.
+            // We pass ref, because we want be able to update rows if _fixErrors = true
+            CheckFieldHeight(ref rows); 
 
             //Next 3 checks will need access to every row of rows[] array. So we put em all in a foreach cycle.
-            foreach(string row in rows)
+            for (int i = 0; i < rows.Length; i++)
             {
-                CheckFieldWidth(row);
-                CheckInputSymbols(row);
-                CheckActiveInputCells(row);
+                CheckFieldWidth(ref rows[i]);
+                CheckInputSymbols(ref rows[i]);
             }
 
             for (int y = 0; y < _height; y++)
@@ -45,9 +47,9 @@ namespace GameLifeCSharpConsole
 
         public void DrawField()
         {
-            AreAllCellsDead();
-
             Console.Clear();
+            
+            bool hasAnyActiveCells = false;
 
             DrawUpperBorderLine();
             for (int y = 0; y < _height; y++)
@@ -57,11 +59,21 @@ namespace GameLifeCSharpConsole
                 {
                     _cells[y, x].ChangeGeneration();
                     Console.Write(_cells[y, x].IsActive ? _render : ' ');
+
+                    if (_cells[y, x].IsActive)
+                    {
+                        hasAnyActiveCells = true;
+                    }
                 }
                 Console.Write('║');
                 Console.WriteLine();
             }
             DrawLowerBorderLine();
+
+            if(!hasAnyActiveCells)
+            {
+                throw new NoActiveCellsException();
+            }
         }
 
         public void GoToNextGeneration()
@@ -74,25 +86,6 @@ namespace GameLifeCSharpConsole
                     _cells[y,x].PredictCellStatus(activeNeightboors);
                 }
             }
-        }
-
-        public void AreAllCellsDead()
-        {
-            bool hasAnyActiveCells = false;
-
-            foreach (Cell cell in _cells)
-            {
-                if (cell.IsActive || cell.WillBeActive)
-                {
-                    hasAnyActiveCells = true;
-                }
-            }
-
-            if(!hasAnyActiveCells)
-            {
-                throw new NoActiveCellsException();
-            }
-
         }
 
         private int GetActiveNeighbors(int xPos, int yPos)
@@ -118,48 +111,72 @@ namespace GameLifeCSharpConsole
             return activeCells;
         }    
 
-        private void CheckFieldHeight(string[] rows)
+        private void CheckFieldHeight(ref string[] rows)
         {      
-            if (rows.Length != _height)
+            // Valid height
+            if (rows.Length == _height)
+            {
+                return;
+            }
+
+            if (_fixErrors)
+            {
+                int tailLength = rows.Length < _height ? _height - rows.Length : 0;
+                if (tailLength > 0)
+                {
+                    string[] tail = new string[tailLength];
+                    for (int i = 0; i < tail.Length; i++)
+                    {
+                        tail[i] = new String('0', _width);
+                    }
+                    string[] updatedRows = new string[_height];
+                    rows.CopyTo(updatedRows, 0);
+                    tail.CopyTo(updatedRows, rows.Length);
+                    rows = updatedRows;
+                }
+            }
+            else
             {
                 throw new InvalidFieldHeightException(rows.Length, _height);
             }
         }
 
-        private void CheckFieldWidth(string row)
+        private void CheckFieldWidth(ref string row)
         {
-            if (row.Length != _width)
+            // Valid row width
+            if (row.Length == _width)
             {
-                throw new InvalidFieldWidthException(row.Length,_width);
+                return;
+            }
+
+            if (_fixErrors)
+            {
+                int tailLength = row.Length < _width ? _width - row.Length : 0;
+                if (tailLength > 0)
+                {
+                  row += new String('0', tailLength);
+                }
+            }
+            else
+            {
+                throw new InvalidFieldWidthException(row.Length, _width);
             }
         }
 
-        private void CheckInputSymbols(string row)
+        private void CheckInputSymbols(ref string row)
         {
             for (int i = 0; i < row.Length; i++)
             {
-                if (row[i] != '0' && row[i] != '1')
+                // Valid symbol
+                if (row[i] == '0' || row[i] == '1')
+                {
+                    continue;
+                }
+
+                if (!_fixErrors)
                 {
                     throw new InvalidInputSymbolsException(row[i]);
                 }
-            }
-        }
-
-        private void CheckActiveInputCells(string row)
-        {
-            bool hasAnyActiveCells = false;
-
-            for (int i = 0; i < row.Length; i++)
-            {
-                if (row[i] == '1')
-                {
-                    hasAnyActiveCells = true;
-                }
-            }
-
-            if(!hasAnyActiveCells)
-            {
-                throw new NoActiveCellsException();
             }
         }
 
@@ -176,3 +193,4 @@ namespace GameLifeCSharpConsole
         }
     }
 }
+
