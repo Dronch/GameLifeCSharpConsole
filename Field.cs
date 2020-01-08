@@ -33,7 +33,7 @@ namespace GameLifeCSharpConsole
             for (int i = 0; i < rows.Length; i++)
             {
                 CheckFieldWidth(ref rows[i]);
-                CheckInputSymbols(rows[i]);
+                CheckInputSymbols(ref rows[i]);
             }
 
             for (int y = 0; y < _height; y++)
@@ -163,32 +163,20 @@ namespace GameLifeCSharpConsole
             }
         }
 
-        private void CheckInputSymbols(string row)
+        private void CheckInputSymbols(ref string row)
         {
             for (int i = 0; i < row.Length; i++)
             {
-                if (row[i] != '0' && row[i] != '1')
+                // Valid symbol
+                if (row[i] == '0' || row[i] == '1')
+                {
+                    continue;
+                }
+
+                if (!_fixErrors)
                 {
                     throw new InvalidInputSymbolsException(row[i]);
                 }
-            }
-        }
-
-        private void CheckActiveInputCells(string row)
-        {
-            bool hasAnyActiveCells = false;
-
-            for (int i = 0; i < row.Length; i++)
-            {
-                if (row[i] == '1')
-                {
-                    hasAnyActiveCells = true;
-                }
-            }
-
-            if(!hasAnyActiveCells)
-            {
-                throw new NoActiveCellsException();
             }
         }
 
