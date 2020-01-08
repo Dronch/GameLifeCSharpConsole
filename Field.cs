@@ -9,13 +9,15 @@ namespace GameLifeCSharpConsole
         private int _width, _height;
         private char _render;
         private Cell[,] _cells;
+        private bool _fixErrors;
 
-        public Field(int height, int width, char render = 'o')
+        public Field(int height, int width, bool fixErrors=false, char render = 'o')
         {
             _width = width; //x
             _height = height; //y
             _render = render;
             _cells = new Cell[_height, _width];
+            _fixErrors = fixErrors;
         }
 
         public void Init(string filename)
@@ -45,9 +47,9 @@ namespace GameLifeCSharpConsole
 
         public void DrawField()
         {
-            AreAllCellsDead();
-
             Console.Clear();
+            
+            bool hasAnyActiveCells = false;
 
             DrawUpperBorderLine();
             for (int y = 0; y < _height; y++)
@@ -55,6 +57,11 @@ namespace GameLifeCSharpConsole
                 Console.Write('║');
                 for (int x = 0; x < _width; x++)
                 {
+                    if (_cells[y, x].IsActive || _cells[y, x].WillBeActive)
+                    {
+                        hasAnyActiveCells = true;
+                    }
+                    
                     _cells[y, x].ChangeGeneration();
                     Console.Write(_cells[y, x].IsActive ? _render : ' ');
                 }
@@ -62,6 +69,12 @@ namespace GameLifeCSharpConsole
                 Console.WriteLine();
             }
             DrawLowerBorderLine();
+
+            if(!hasAnyActiveCells)
+            {
+                Console.Clear();
+                throw new NoActiveCellsException();
+            }
         }
 
         public void GoToNextGeneration()
@@ -74,25 +87,6 @@ namespace GameLifeCSharpConsole
                     _cells[y,x].PredictCellStatus(activeNeightboors);
                 }
             }
-        }
-
-        public void AreAllCellsDead()
-        {
-            bool hasAnyActiveCells = false;
-
-            foreach (Cell cell in _cells)
-            {
-                if (cell.IsActive || cell.WillBeActive)
-                {
-                    hasAnyActiveCells = true;
-                }
-            }
-
-            if(!hasAnyActiveCells)
-            {
-                throw new NoActiveCellsException();
-            }
-
         }
 
         private int GetActiveNeighbors(int xPos, int yPos)
@@ -176,3 +170,4 @@ namespace GameLifeCSharpConsole
         }
     }
 }
+
