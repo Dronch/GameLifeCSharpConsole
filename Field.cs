@@ -25,15 +25,15 @@ namespace GameLifeCSharpConsole
             string[] rows = File.ReadAllLines(filename);
             // Checking the input:
 
-            //This check needs only length of rows array. No need to put in in a cycle.
-            CheckFieldHeight(rows); 
+            // This check needs only length of rows array. No need to put in in a cycle.
+            // We pass ref, because we want be able to update rows if _fixErrors = true
+            CheckFieldHeight(ref rows); 
 
             //Next 3 checks will need access to every row of rows[] array. So we put em all in a foreach cycle.
             foreach(string row in rows)
             {
                 CheckFieldWidth(row);
                 CheckInputSymbols(row);
-                CheckActiveInputCells(row);
             }
 
             for (int y = 0; y < _height; y++)
@@ -57,13 +57,13 @@ namespace GameLifeCSharpConsole
                 Console.Write('║');
                 for (int x = 0; x < _width; x++)
                 {
-                    if (_cells[y, x].IsActive || _cells[y, x].WillBeActive)
+                    _cells[y, x].ChangeGeneration();
+                    Console.Write(_cells[y, x].IsActive ? _render : ' ');
+
+                    if (_cells[y, x].IsActive)
                     {
                         hasAnyActiveCells = true;
                     }
-                    
-                    _cells[y, x].ChangeGeneration();
-                    Console.Write(_cells[y, x].IsActive ? _render : ' ');
                 }
                 Console.Write('║');
                 Console.WriteLine();
@@ -72,7 +72,6 @@ namespace GameLifeCSharpConsole
 
             if(!hasAnyActiveCells)
             {
-                Console.Clear();
                 throw new NoActiveCellsException();
             }
         }
@@ -112,19 +111,44 @@ namespace GameLifeCSharpConsole
             return activeCells;
         }    
 
-        private void CheckFieldHeight(string[] rows)
+        private void CheckFieldHeight(ref string[] rows)
         {      
-            if (rows.Length != _height)
+            // Valid height
+            if (rows.Length == _height)
+            {
+                return;
+            }
+
+            Console.WriteLine(rows.Length);
+
+            if (_fixErrors)
+            {
+                int tailLength = rows.Length < _height ? _height - rows.Length : 0;
+                if (tailLength > 0)
+                {
+                    string[] tail = new string[tailLength];
+                    for (int i = 0; i < tail.Length; i++)
+                    {
+                        tail[i] = new String('0', _width);
+                    }
+                    string[] updatedRows = new string[_height];
+                    rows.CopyTo(updatedRows, 0);
+                    tail.CopyTo(updatedRows, rows.Length);
+                    rows = updatedRows;
+                }
+            }
+            else
             {
                 throw new InvalidFieldHeightException(rows.Length, _height);
             }
+            Console.WriteLine(rows.Length);
         }
 
         private void CheckFieldWidth(string row)
         {
             if (row.Length != _width)
             {
-                throw new InvalidFieldWidthException(row.Length,_width);
+                throw new InvalidFieldWidthException(row.Length, _width);
             }
         }
 
