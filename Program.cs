@@ -5,12 +5,12 @@ namespace GameLifeCSharpConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             RunTheGameOfLife("input.txt", 20, 40, false);
         }
 
-        static void RunTheGameOfLife(string filename, int height, int width, bool fixErrors=false)
+        public static void RunTheGameOfLife(string filename, int height, int width, bool fixErrors=false)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace GameLifeCSharpConsole
                 if (e is InvalidFieldHeightException || e is InvalidFieldWidthException || e is InvalidInputSymbolsException)
                 {
                     Console.WriteLine(e.Message);
-                    Console.WriteLine("Do you want to fix errors automaticly? (y/n)");
+                    Console.WriteLine("Do you want to fix errors automatically? (y/n)");
                     if (Console.ReadLine() == "y")
                     {
                         RunTheGameOfLife(filename, height, width, true);

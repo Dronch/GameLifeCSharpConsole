@@ -11,6 +11,14 @@ namespace GameLifeCSharpConsole
         private Cell[,] _cells;
         private bool _fixErrors;
 
+        public int Width { get => _width; private set => _width = value; }
+        public int Height { get => _height; private set => _height = value; }
+
+        public Cell GetCell(int yPos, int xPos)
+        {
+            return _cells[yPos, xPos];
+        }
+
         public Field(int height, int width, bool fixErrors=false, char render = 'o')
         {
             _width = width; //x
@@ -19,6 +27,8 @@ namespace GameLifeCSharpConsole
             _cells = new Cell[_height, _width];
             _fixErrors = fixErrors;
         }
+
+        
 
         public void Init(string filename)
         {
