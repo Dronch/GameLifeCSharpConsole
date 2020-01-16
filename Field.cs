@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GameLifeCSharpConsole
 {
-    class Field
+    public class Field
     {
         private int _width, _height;
         private char _render;

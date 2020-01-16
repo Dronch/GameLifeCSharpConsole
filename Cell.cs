@@ -2,7 +2,7 @@
 
 namespace GameLifeCSharpConsole
 {
-    class Cell
+    public class Cell
     {
         public bool IsActive 
         { 
