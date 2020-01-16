@@ -20,36 +20,56 @@ namespace GameLifeCSharpConsole.UnitTests
         }
 
         [Test]
-        public void PredictCellStatusInputWillBeBorn()
+        public void CellStaysActiveAfterPredictCellStatusValueThree()
         {
-            int activeCells = 3;
-            //Testing both Active and Incative cell with 3 alive neighbors.
-            //First case should be false because 
-            Assert.IsFalse((CellFactory.Create(true).IsActive == false) && activeCells == 3);
-            Assert.IsTrue((CellFactory.Create(false).IsActive == false) && activeCells == 3);
+            Cell activeCell = CellFactory.Create(true);
+            activeCell.PredictCellStatus(3);
+            Assert.IsTrue(activeCell.WillBeActive);
         }
 
         [Test]
-        public void PredictCellStatusWillDieInputIntTwo()
+        public void CellBecomesActiveAfterPredictGenerationValueThree()
         {
-            int activeCells = 2;
 
-            //Testing both Active and Incative cell with 2 alive neighbors. 
-            //Both cases should be false = shouldn't die/change status.
-            Assert.IsFalse(CellFactory.Create(true).IsActive && (activeCells < 2 || activeCells > 3));
-            Assert.IsFalse(CellFactory.Create(false).IsActive && (activeCells < 2 || activeCells > 3));
-
+            Cell deadCell = CellFactory.Create(false);
+            deadCell.PredictCellStatus(3);
+            Assert.IsTrue(deadCell.WillBeActive);
         }
 
         [Test]
-        public void PredictCellStatusWillDieInputIntOne()
+        public void CellStaysAliveAfterPredictGenerationValueTwo()
         {
-            int activeCells = 1;
 
-            //Testing both Active and Incative cell with 2 alive neighbors. 
-            //Fist case should be true. Second - false, because its dead already.
-            Assert.IsTrue(CellFactory.Create(true).IsActive && (activeCells < 2 || activeCells > 3));
-            Assert.IsFalse(CellFactory.Create(false).IsActive && (activeCells < 2 || activeCells > 3));
+            Cell deadCell = CellFactory.Create(true);
+            deadCell.PredictCellStatus(2);
+            Assert.IsTrue(deadCell.WillBeActive);
         }
+
+        [Test]
+        public void CellStaysDeadAfterPredictGenerationValueTwo()
+        {
+
+            Cell deadCell = CellFactory.Create(false);
+            deadCell.PredictCellStatus(2);
+            Assert.IsFalse(deadCell.WillBeActive);
+        }
+
+        [Test]
+        public void CellDiesAfterPredictGenerationValueOne()
+        {
+
+            Cell deadCell = CellFactory.Create(true);
+            deadCell.PredictCellStatus(1);
+            Assert.IsFalse(deadCell.WillBeActive);
+        }
+
+        public void CellStaysDeadAfterPredictGenerationValueOne()
+        {
+
+            Cell deadCell = CellFactory.Create(false);
+            deadCell.PredictCellStatus(1);
+            Assert.IsFalse(deadCell.WillBeActive);
+        }
+
     }
 }
