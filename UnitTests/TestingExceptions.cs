@@ -35,32 +35,12 @@ namespace GameLifeCSharpConsole.UnitTests
 
         [Test]
         public void WrongInputFieldAllZeroesThrowsException()
-        {            
+        {
             Field field = new Field(20, 40, false);
             string path = "inputAllZeroes.txt";
             field.Init(path);
             Assert.Throws<NoActiveCellsException>(() => field.DrawField());
-
-            //bool hasAnyActiveCells = false;
-            //for (int y = 0; y < field.Height; y++)
-            //{
-            //    for (int x = 0; x < field.Width; x++)
-            //    {
-            //        if (field.GetCell(y, x).IsActive || field.GetCell(y, x).WillBeActive)
-            //        {
-            //            hasAnyActiveCells = true;
-            //        }
-            //    }
-            //}
-
-            //if (!hasAnyActiveCells)
-            //{
-            //    e = new NoActiveCellsException();
-            //}
-
-            //Assert.AreEqual(e.Message, new NoActiveCellsException().Message);
         }
-
     }
 
 }
