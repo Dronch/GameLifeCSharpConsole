@@ -57,8 +57,16 @@ namespace GameLifeCSharpConsole
 
         public void DrawField()
         {
-            Console.Clear();
-            
+            try
+            {
+                Console.Clear();
+            }
+
+            catch (IOException)
+            {
+
+            }
+
             bool hasAnyActiveCells = false;
 
             DrawUpperBorderLine();

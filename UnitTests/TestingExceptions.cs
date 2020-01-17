@@ -35,7 +35,7 @@ namespace GameLifeCSharpConsole.UnitTests
 
         [Test]
         public void WrongInputFieldAllZeroesThrowsException()
-        {
+        {            
             Field field = new Field(20, 40, false);
             string path = "inputAllZeroes.txt";
             field.Init(path);
